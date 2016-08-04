@@ -26,7 +26,7 @@ To build container use the command below:
 
 Prepare database:
     $ docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=changeme -d mariadb
-    $ docker exec -it dcimdb mysql -uroot -pchangeme < prepare_db.sql
+    $ docker exec -i dcimdb mysql -uroot -pchangeme < prepare_db.sql
     
 To run container use the command below:
 
