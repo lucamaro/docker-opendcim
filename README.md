@@ -20,6 +20,10 @@ To install docker in Ubuntu 15.04 use the commands:
 
 ## Usage
 
+To build container use the command below:
+
+    $ docker build -t lucamaro/docker-opendcim .
+
 Prepare database:
     $ docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=changeme -d mariadb
     $ docker exec -it dcimdb mysql -uroot -pchangeme < prepare_db.sql
@@ -30,7 +34,7 @@ To run container use the command below:
 
 or
 
-    $ docker run -d -p xxxxx:80 quantumobject/docker-opendcim
+    $ docker run -d -p xxxxx:80 lucamaro/docker-opendcim
 
 Where xxxxx is the port assigned by you for the container if not docker will assigned one for it.
 
