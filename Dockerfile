@@ -12,22 +12,12 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -q php5 
                     snmp-mibs-downloader \
                     php5-curl \
                     php-gettext\
-                    mysql-server \
                     php5-mysql \
                     apache2-utils \
                     graphviz \
                     && apt-get clean \
                     && rm -rf /tmp/* /var/tmp/*  \
                     && rm -rf /var/lib/apt/lists/*
-
-# to add mysqld deamon to runit
-RUN mkdir -p /etc/service/mysqld /var/log/mysqld ; sync 
-RUN mkdir /etc/service/mysqld/log
-COPY mysqld.sh /etc/service/mysqld/run
-COPY mysqld-log.sh /etc/service/mysqld/log/run
-RUN chmod +x /etc/service/mysqld/run /etc/service/mysqld/log/run \
-    && cp /var/log/cron/config /var/log/mysqld/ \
-    && chown -R mysql /var/log/mysqld
 
 # to add apache2 deamon to runit
 RUN mkdir -p /etc/service/apache2  /var/log/apache2 ; sync 
@@ -70,7 +60,7 @@ RUN chmod +x /sbin/after_install
 # at that ports need to allow access from firewall if need to access it outside of the server. 
 EXPOSE 80
 
-#creatian of volume 
+#creation of volume 
 VOLUME /var/www/
 
 # Use baseimage-docker's init system.

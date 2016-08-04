@@ -1,14 +1,5 @@
 #!/bin/bash
 
-/usr/bin/mysqld_safe &
- sleep 5s
-
- mysqladmin -u root password mysqlpsswd
- mysqladmin -u root -pmysqlpsswd reload
- mysqladmin -u root -pmysqlpsswd create dcim
-
- echo "GRANT ALL ON dcim.* TO dcim@localhost IDENTIFIED BY 'dcim'; flush privileges; " | mysql -u root -pmysqlpsswd
-
  cd /var/www
  wget http://opendcim.org/packages/openDCIM-4.2.tar.gz
  tar zxpvf openDCIM-4.2.tar.gz
@@ -34,6 +25,3 @@ EOF
  
  htpasswd -cb /var/www/opendcim.password dcim dcim
  a2enmod rewrite
-
-killall mysqld
-sleep 5s

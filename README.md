@@ -1,5 +1,7 @@
 # docker-opendcim
 
+**This is based on work of angelrr7702**
+
 Docker container for [Opendcim][3]
 
 "This is openDCIM, a free, web based Data Center Infrastructure Management application. " "openDCIM does not contend to be a function by function replacement for commercial applications. Instead, openDCIM covers the majority of features needed by the developers - as is often the case of open source software. The software is released under the GPL v3 license, so you are welcome to take it, modify it, and share it with others, as long as you acknowledge where it came from."
@@ -18,9 +20,13 @@ To install docker in Ubuntu 15.04 use the commands:
 
 ## Usage
 
+Prepare database:
+    $ docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=changeme -d mariadb
+    $ docker exec -it dcimdb mysql -uroot -pchangeme < prepare_db.sql
+    
 To run container use the command below:
 
-    $ docker run -d -p 80 quantumobject/docker-opendcim
+    $ docker run -d -p 80 --link dcimdb:db --name dcim lucamaro/docker-opendcim
 
 or
 
