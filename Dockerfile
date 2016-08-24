@@ -1,7 +1,7 @@
 #name of container: docker-opendcim
 #versison of container: 0.2.2
 FROM quantumobject/docker-baseimage:15.04
-MAINTAINER Angel Rodriguez  "angelrr7702@gmail.com"
+MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
 #add repository and update the container
 #Installation of nesesary package/software for this containers...
