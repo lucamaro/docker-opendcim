@@ -30,3 +30,22 @@ EOF
  
  htpasswd -cb /var/www/opendcim.password dcim dcim
  a2enmod rewrite
+
+# add locales
+locale-gen az_AZ
+locale-gen ca_AD
+locale-gen de_DE
+locale-gen es_ES
+locale-gen fr_FR
+locale-gen gl_ES
+locale-gen it_IT
+locale-gen ko_KR
+locale-gen pt_BR
+locale-gen sl_SI
+locale-gen uk_UA
+locale-gen zh_CN
+
+dpkg-reconfigure locales 
+
+# FIX openDCIM code for locale not working
+sed -i 's:putenv("LC_ALL=$locale");:putenv("LANGUAGE=$locale");:' /var/www/dcim/misc.inc.php
