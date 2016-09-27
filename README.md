@@ -2,7 +2,7 @@
 
 **This is based on work of angelrr7702**
 
-Docker container for [Opendcim][3]
+Docker container for [Opendcim][3] v.4.3
 
 "This is openDCIM, a free, web based Data Center Infrastructure Management application. " "openDCIM does not contend to be a function by function replacement for commercial applications. Instead, openDCIM covers the majority of features needed by the developers - as is often the case of open source software. The software is released under the GPL v3 license, so you are welcome to take it, modify it, and share it with others, as long as you acknowledge where it came from."
 
@@ -20,39 +20,31 @@ To install docker in Ubuntu 15.04 use the commands:
 
 ## Usage
 
-To build container use the command below:
+To build container, customize DBPASS variable in Makefile, then use the command below:
 
-    $ docker build -t lucamaro/docker-opendcim .
-
-Prepare database:
-    $ docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=changeme -d mariadb
-    $ docker exec -i dcimdb mysql -uroot -pchangeme < prepare_db.sql
+    $ make build
     
 To run container use the command below:
 
-    $ docker run -d -p 80 --link dcimdb:db --name dcim lucamaro/docker-opendcim
+    $ make run
 
-or
-
-    $ docker run -d -p xxxxx:80 lucamaro/docker-opendcim
-
-Where xxxxx is the port assigned by you for the container if not docker will assigned one for it.
 
 ## Accessing the opendcim applications:
 
-After that check with your browser at addresses plus the port assigined by docker or you:
+After that check with your browser at addresses:
 
-  - **http://host_ip:port/**
+  - **http://host_ip/**
 
 Log in using login/password dcim/dcim  please replace it after initial web install with command :
 
-    $ docker exec -it container_id after_install
+    $ make after-install
     
 This will ask for new password for dcim user and it will remove the install script for security.
 
 To access the container from the server that the container is running :
 
-    $ docker exec -it container_id /bin/bash
+    $ docker exec -it dcim /bin/bash
+    $ docker exec -it dcimdb /bin/bash
 
 note: deploy this container behind proxy with SSL :
 

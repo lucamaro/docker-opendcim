@@ -1,5 +1,5 @@
 #name of container: docker-opendcim
-#versison of container: 0.2.2
+#version of container: 0.2.2
 FROM quantumobject/docker-baseimage:15.04
 MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
@@ -39,7 +39,7 @@ RUN chmod +x /etc/my_init.d/startup.sh
 COPY apache2.conf /etc/apache2/apache2.conf
 RUN sed  -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/dcim/' /etc/apache2/sites-available/000-default.conf
 
-#pre-config scritp for different service that need to be run when container image is create 
+#pre-config script for different service that need to be run when container image is create 
 #maybe include additional software that need to be installed ... with some service running ... like example mysqld
 COPY pre-conf.sh /sbin/pre-conf
 RUN chmod +x /sbin/pre-conf; sync \
