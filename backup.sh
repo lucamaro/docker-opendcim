@@ -7,3 +7,5 @@ cp  /etc/hosts  /var/backups/
 cp -R /var/www/dcim/pictures /var/backups/pictures
 cp -R /var/www/dcim/drawings /var/backups/drawings
 cp -R /var/www/dcim/images /var/backups/images
+
+cp /var/www/opendcim.password /var/backups/
