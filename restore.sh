@@ -2,9 +2,9 @@
 
 
 #Restore importand files relate to app
-cp -R /var/backups/pictures /var/www/dcim/pictures
-cp -R /var/backups/drawings /var/www/dcim/drawings 
-cp -R /var/backups/images /var/www/dcim/images 
+cp /var/backups/pictures/* /var/www/dcim/pictures
+cp /var/backups/drawings/* /var/www/dcim/drawings 
+cp /var/backups/images/* /var/www/dcim/images 
 
 cp /var/backups/opendcim.password /var/www/ 
 
