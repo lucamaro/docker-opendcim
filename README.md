@@ -20,14 +20,15 @@ To install docker in Ubuntu 15.04 use the commands:
 
 ## Usage
 
-To build container, customize DBPASS variable in Makefile, then use the command below:
+To build container, customize DBPASS and PORT variable in Makefile, then use the command below:
 
     $ make build
     
-To run container use the command below:
+To run container **only for the first time** use the command below:
 
-    $ make run
+    $ make init
 
+This will create dcimdb (mariadb instance), dcim container and dcim_backup named volume.
 
 ## Accessing the opendcim applications:
 
@@ -51,6 +52,29 @@ note: deploy this container behind proxy with SSL :
 https://github.com/jwilder/nginx-proxy
 
 https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion
+
+## Updating container
+
+First keep updated this repository:
+
+    $ git pull
+
+Then build the new image (see VERSION variable in Makefile):
+
+    $ make build
+    
+Execute update in temporary container dcim_next:
+
+    $ make update
+
+Access the new webapp via browser or http client to launch the install.php script, 
+then perform the after-install script on new container:
+
+    $ make update-after-install
+    
+If everything is ok, delete old container:
+
+    $ make confirm_update
 
 ## More Info
 
