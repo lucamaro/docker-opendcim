@@ -1,6 +1,8 @@
 # This file is part of lucamaro/docker-opendcim
 
 DBPASSWD=changeme
+VERSION=4.3
+PORT=80
 
 # lists all available targets
 list:
@@ -9,14 +11,31 @@ list:
 no_targets__:
 
 build:
-	@docker build -t lucamaro/docker-opendcim:4.3 .
+	@docker build -t lucamaro/docker-opendcim:$(VERSION) .
 
-run:
+init:
 	@docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=$(DBPASSWD) -d mariadb
 	@echo "Waiting for db to be up..."
 	@sleep 25
-	@docker exec -i dcimdb mysql -uroot -p$(DBPASSWD) < prepare_db.sql
-	@docker run -d -p 80:80 --link dcimdb:db --name dcim  lucamaro/docker-opendcim:4.3
+	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "create database dcim"
+	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by 'dcim'"
+	@docker volume create --name dcim_backup
+	@docker run -d -p $(PORT):80 --link dcimdb:db -v dcim_backup:/var/backup --name dcim  lucamaro/docker-opendcim:$(VERSION)
+
+update:
+	@docker exec -it dcim /sbin/backup
+	@docker stop dcim
+	@docker run -d -p $(PORT):80 --link dcimdb:db -v dcim_backup:/var/backup --name dcim_next lucamaro/docker-opendcim:$(VERSION)
+	@docker exec -it dcim_next restore
+
+undo_update:
+	-@docker stop dcim_next
+	-@docker rm -v dcim_next
+	@docker start dcim
+
+confirm_update:
+	@docker rm -v dcim
+	@docker rename dcim_next dcim
 
 start:
 	-@docker start dcimdb dcim
