@@ -55,4 +55,4 @@ stop:
 	-@docker stop dcimdb
 
 logs:
-	@docker exec -it dcim tail -f /var/log/apache2/access_log /var/log/apache2/error.log
+	@docker logs dcim
