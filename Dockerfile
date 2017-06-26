@@ -3,6 +3,12 @@ MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
 ARG VERSION=4.4
  
+# some configuration for apache
+COPY apache2.conf /etc/apache2/apache2.conf
+
+# enable localization, see locale-gen below
+COPY locale.gen /etc
+
 # Installation of nesesary package/software for this containers...
 RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/apt/sources.list && \
     sed -i 's/jessie main/jessie main contrib non-free/' /etc/apt/sources.list &&  \
@@ -27,18 +33,11 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = 'db'/" /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
-                    && a2enmod rewrite
-
-
-# some configuration for apache
-COPY apache2.conf /etc/apache2/apache2.conf
-RUN sed  -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/dcim/' /etc/apache2/sites-available/000-default.conf
+                    && a2enmod rewrite \
+					&& sed  -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/dcim/' /etc/apache2/sites-available/000-default.conf \
+					&& locale-gen
 
 COPY dcim.htaccess /var/www/dcim/.htaccess
-
-# enable localization
-COPY locale.gen /etc
-RUN locale-gen
 
 # to allow access from outside of the container  to the container service
 # at that ports need to allow access from firewall if need to access it outside of the server. 
