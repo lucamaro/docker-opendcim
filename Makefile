@@ -33,8 +33,6 @@ update:
 
 update-after-install:
 	@docker exec -it dcim_next rm /var/www/dcim/install.php
-	$(info Change dcim password...)
-	@docker exec -it dcim_next htpasswd /var/www/secure/opendcim.password dcim
     
 undo_update:
 	-@docker stop dcim_next
