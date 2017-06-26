@@ -1,22 +1,16 @@
-# docker-opendcim
+# docker-opendcim container
 
-**This is based on work of angelrr7702**
+This was based initially on work of angelrr7702 (thank you for letting me start!). Then it was changed in this parts:
 
-Docker container for [Opendcim][3] v.4.3
+- db was separatend in a different container to achieve one process per container
+- layers were reduced in Dockerfile
+- backup/restore is done in a more standard way
+- starting image was changed to mariadb and php-apache (officials)
 
-"This is openDCIM, a free, web based Data Center Infrastructure Management application. " "openDCIM does not contend to be a function by function replacement for commercial applications. Instead, openDCIM covers the majority of features needed by the developers - as is often the case of open source software. The software is released under the GPL v3 license, so you are welcome to take it, modify it, and share it with others, as long as you acknowledge where it came from."
+## Requirements
 
+You need docker installed, obviously. See documentation specific for your OS on docker site.
 
-## Install dependencies
-
-  - [Docker][2]
-
-To install docker in Ubuntu 15.04 use the commands:
-
-    $ sudo apt-get update
-    $ wget -qO- https://get.docker.com/ | sh
-
- To install docker in other operating systems check [docker online documentation][4]
 
 ## Usage
 
@@ -24,11 +18,15 @@ To build container, customize DBPASS and PORT variable in Makefile, then use the
 
     $ make build
     
-To run container **only for the first time** use the command below:
+To run db container **only for the first time** use the command below:
 
-    $ make init
+    $ make init_db
 
-This will create dcimdb (mariadb instance), dcim container and dcim_backup named volume.
+This will create dcimdb (mariadb instance).
+
+Run dcim container:
+
+    $ make init_dcim
 
 ## Accessing the opendcim applications:
 
@@ -68,7 +66,7 @@ Execute update in temporary container dcim_next:
     $ make update
 
 Access the new webapp via browser or http client to launch the install.php script, 
-then perform the after-install script on new container:
+then perform the after-install operation on new container:
 
     $ make update-after-install
     
@@ -76,20 +74,20 @@ If everything is ok, delete old container:
 
     $ make confirm_update
 
-## More Info
+else...
 
-About Opendcim: [www.opendcim.org][1]
+    $ make undo_update
 
-To help improve this container [docker-opendcim][5]
+## Backup containers data
 
-Example of this [docker-opendcim][6]
+Launch a new container with ``--volumes-from`` directive, then use tar utility to create backup.
 
-For additional info about us and our projects check our site [www.quantumobject.org][7]
+    $ docker run --rm --volumes-from=dcim --volumes-from=dcimdb \
+			-v $PWD:/dcim_backup alpine \
+			tar cvzf /dcim_backup/dcim_backup.tgz \
+					/var/www/dcim/pictures \
+					/var/www/dcim/drawings \
+					/var/www/dcim/images \
+					/var/www/secure \
+					/db_backup
 
-[1]:http://www.opendcim.org
-[2]:https://www.docker.com
-[3]:http://www.opendcim.org/downloads.html
-[4]:http://docs.docker.com
-[5]:https://github.com/QuantumObject/docker-opendcim
-[6]:https://www.quantumobject.com:32769
-[7]:https://www.quantumobject.org/
