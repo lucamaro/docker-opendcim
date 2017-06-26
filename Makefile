@@ -19,14 +19,11 @@ init:
 	@sleep 25
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "create database dcim"
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by 'dcim'"
-	@docker volume create --name dcim_backup
-	@docker run -d -p $(PORT):80 --link dcimdb:db -v dcim_backup:/var/backups --name dcim  lucamaro/docker-opendcim:$(VERSION)
+	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
-	@docker exec -it dcim /sbin/backup
 	@docker stop dcim
-	@docker run -d -p $(PORT):80 --link dcimdb:db -v dcim_backup:/var/backups --name dcim_next lucamaro/docker-opendcim:$(VERSION)
-	@docker exec -it dcim_next /sbin/restore
+	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim_next lucamaro/docker-opendcim:$(VERSION)
 
 update-after-install:
 	@docker exec -it dcim_next rm /var/www/dcim/install.php
