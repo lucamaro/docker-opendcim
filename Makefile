@@ -29,7 +29,9 @@ update:
 	@docker exec -it dcim_next /sbin/restore
 
 update-after-install:
-	@docker exec -it dcim_next after_install
+	@docker exec -it dcim_next rm /var/www/dcim/install.php
+	$(info Change dcim password...)
+	@docker exec -it dcim_next htpasswd /var/www/opendcim.password dcim
     
 undo_update:
 	-@docker stop dcim_next
@@ -44,7 +46,9 @@ start:
 	-@docker start dcimdb dcim
 
 after-install:
-	@docker exec -it dcim after_install
+	@docker exec -it dcim rm /var/www/dcim/install.php
+	$(info Change dcim password...)
+	@docker exec -it dcim htpasswd /var/www/opendcim.password dcim
 
 stop:
 	-@docker stop dcim
@@ -52,4 +56,3 @@ stop:
 
 logs:
 	@docker exec -it dcim tail -f /var/log/apache2/access_log /var/log/apache2/error.log
-

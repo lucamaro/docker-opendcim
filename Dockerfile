@@ -37,10 +37,6 @@ COPY restore.sh /sbin/restore
 RUN chmod +x /sbin/restore
 VOLUME /var/backups
 
-#script to execute after install configuration done .... 
-COPY after_install.sh /sbin/after_install
-RUN chmod +x /sbin/after_install
-
 # to allow access from outside of the container  to the container service
 # at that ports need to allow access from firewall if need to access it outside of the server. 
 EXPOSE 80
