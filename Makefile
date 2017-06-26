@@ -1,7 +1,7 @@
 # This file is part of lucamaro/docker-opendcim
 
 DBPASSWD=changeme
-VERSION=4.3
+VERSION=4.4
 PORT=80
 
 # lists all available targets
