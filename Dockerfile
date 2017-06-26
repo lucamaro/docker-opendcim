@@ -20,8 +20,8 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && rm -rf /tmp/* /var/tmp/*  \
                     && rm -rf /var/lib/apt/lists/* \
 					&& mkdir -p /var/www && cd /var/www \
-					&& wget -q -o - http://opendcim.org/packages/openDCIM-$VERSION.tar.gz | tar xf - \
-					&& mv openDCIM-$VERSION dcim \
+					&& wget -q -O - http://opendcim.org/packages/openDCIM-$VERSION.tar.gz | tar xzf - \
+					&& mv /var/www/openDCIM-$VERSION /var/www/dcim \
 					&& rm -R /var/www/html \
 					&& chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
 					&& cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
