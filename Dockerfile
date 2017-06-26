@@ -26,7 +26,8 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
 					&& chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
 					&& cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
 					&& sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = 'db'/" /var/www/dcim/db.inc.php \
-					&& htpasswd -cb /var/www/opendcim.password dcim dcim \
+					&& mkdir /var/www/secure \
+					&& htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
 					&& a2enmod rewrite
 
 
@@ -53,7 +54,7 @@ VOLUME /var/backups
 # at that ports need to allow access from firewall if need to access it outside of the server. 
 EXPOSE 80
 
-#creation of volume 
-VOLUME /var/www/
+# declaration of volumes 
+VOLUME ["/var/www/dcim/drawings", "/var/www/dcim/pictures", "/var/www/dcim/images", "/var/www/secure"]
 
 
