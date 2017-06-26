@@ -13,12 +13,14 @@ no_targets__:
 build:
 	@docker build -t lucamaro/docker-opendcim:$(VERSION) .
 
-init:
+init_db:
 	@docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=$(DBPASSWD) -d mariadb
 	@echo "Waiting for db to be up..."
 	@sleep 25
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "create database dcim"
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by 'dcim'"
+
+init_dcim:
 	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
@@ -28,7 +30,7 @@ update:
 update-after-install:
 	@docker exec -it dcim_next rm /var/www/dcim/install.php
 	$(info Change dcim password...)
-	@docker exec -it dcim_next htpasswd /var/www/opendcim.password dcim
+	@docker exec -it dcim_next htpasswd /var/www/secure/opendcim.password dcim
     
 undo_update:
 	-@docker stop dcim_next
@@ -45,7 +47,7 @@ start:
 after-install:
 	@docker exec -it dcim rm /var/www/dcim/install.php
 	$(info Change dcim password...)
-	@docker exec -it dcim htpasswd /var/www/opendcim.password dcim
+	@docker exec -it dcim htpasswd /var/www/secure/opendcim.password dcim
 
 stop:
 	-@docker stop dcim
