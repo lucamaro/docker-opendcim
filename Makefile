@@ -14,11 +14,15 @@ build:
 	@docker build -t lucamaro/docker-opendcim:$(VERSION) .
 
 init_db:
-	@docker run --name dcimdb -e MYSQL_ROOT_PASSWORD=$(DBPASSWD) -d mariadb
+	@docker run --name dcimdb -v db_backup -e MYSQL_ROOT_PASSWORD=$(DBPASSWD) -d mariadb
 	@echo "Waiting for db to be up..."
 	@sleep 25
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "create database dcim"
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by 'dcim'"
+
+
+backup_db:
+	@docker exec -it dcimdb sh -c "mysqldump -uroot -p$(DBPASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
 
 init_dcim:
 	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim  lucamaro/docker-opendcim:$(VERSION)
