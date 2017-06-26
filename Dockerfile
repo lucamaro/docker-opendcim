@@ -41,15 +41,6 @@ COPY dcim.htaccess /var/www/dcim/.htaccess
 COPY locale.gen /etc
 RUN locale-gen
 
-
-##scritp that can be running from the outside using docker-bash tool ...
-## for example to create backup for database with convination of VOLUME   dockers-bash container_ID backup_mysql
-COPY backup.sh /sbin/backup
-RUN chmod +x /sbin/backup
-COPY restore.sh /sbin/restore
-RUN chmod +x /sbin/restore
-VOLUME /var/backups
-
 # to allow access from outside of the container  to the container service
 # at that ports need to allow access from firewall if need to access it outside of the server. 
 EXPOSE 80
