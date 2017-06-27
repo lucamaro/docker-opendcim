@@ -93,3 +93,9 @@ Launch a new container with ``--volumes-from`` directive, then use tar utility t
 					/var/www/secure \
 					/db_backup
 
+## Restore db data
+
+Retrieve dump.sql.gz from the backup created above, then:
+
+	make restore_db
+	

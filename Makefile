@@ -31,6 +31,9 @@ init_db:
 backup_db:
 	@docker exec -it dcimdb sh -c "mysqldump -uroot -p$(DBPASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
 
+restore_db:
+	 @$(shell zcat dump.sql.gz | docker exec -i dcimdb mysql -uroot -p$(DBPASSWD))
+	
 init_dcim:
 	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim  lucamaro/docker-opendcim:$(VERSION)
 
