@@ -2,13 +2,16 @@
 
 ## CUSTOMIZED VARIABLES
 # db hostname, don't change if you want to use the docker link to db container
+# otherwise change DBHOST name and empty DBLINK_OPTS
 DBHOST=db
+DBLINK_OPT="--link"
+DBLINK_PAIR="dcimdb:db"
 # root password for mysql
 DBPASSWD=changeme
 # schema owner password
 DCIMDBPASSWD=changeme
 # port exposing the service by your container
-PORT=80
+PORT=5000
 
 ## don't change this
 VERSION=4.4
@@ -37,11 +40,11 @@ restore_db:
 	 @$(shell zcat dump.sql.gz | docker exec -i dcimdb mysql -uroot -p$(DBPASSWD))
 	
 init_dcim:
-	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim  lucamaro/docker-opendcim:$(VERSION)
+	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) $(DBLINK_OPT) $(DBLINK_PAIR) --name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
 	@docker stop dcim
-	@docker run -d -p $(PORT):80 --link dcimdb:db --name dcim_next lucamaro/docker-opendcim:$(VERSION)
+	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) $(DBLINK_OPTS) --volumes-from=dcim --name dcim_next lucamaro/docker-opendcim:$(VERSION)
 
 update-after-install:
 	@docker exec -it dcim_next rm /var/www/dcim/install.php

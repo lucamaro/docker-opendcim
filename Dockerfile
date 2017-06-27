@@ -31,7 +31,6 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && rm -R /var/www/html \
                     && chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
-                    && sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = '$(DBHOST)'/" /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
                     && a2enmod rewrite \
@@ -47,4 +46,6 @@ EXPOSE 80
 # declaration of volumes 
 VOLUME ["/var/www/dcim/drawings", "/var/www/dcim/pictures", "/var/www/dcim/images", "/var/www/secure"]
 
-
+# init script as entrypoint for initial configuration
+COPY entrypoint.sh /usr/local/bin
+ENTRYPOINT ["entrypoint.sh"]
