@@ -28,7 +28,7 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && mkdir -p /var/www && cd /var/www \
                     && wget -q -O - http://opendcim.org/packages/openDCIM-$VERSION.tar.gz | tar xzf - \
                     && mv /var/www/openDCIM-$VERSION /var/www/dcim \
-                    && rm -R /var/www/html \
+                    && cd / && rm -R /var/www/html \
                     && chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
@@ -48,4 +48,4 @@ VOLUME ["/var/www/dcim/drawings", "/var/www/dcim/pictures", "/var/www/dcim/image
 
 # init script as entrypoint for initial configuration
 COPY entrypoint.sh /usr/local/bin
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh", "-DFOREGROUND"]

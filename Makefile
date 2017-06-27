@@ -2,16 +2,18 @@
 
 ## CUSTOMIZED VARIABLES
 # db hostname, don't change if you want to use the docker link to db container
-# otherwise change DBHOST name and empty DBLINK_OPTS
+# otherwise change DBHOST name and empty DBLINK_OPT/DBLINK_PAIR
 DBHOST=db
 DBLINK_OPT="--link"
 DBLINK_PAIR="dcimdb:db"
 # root password for mysql
-DBPASSWD=changeme
-# schema owner password
-DCIMDBPASSWD=changeme
+ROOT_DB_PASSWD=changeme
+# schema user and password
+DCIM_DB_SCHEMA=dcim
+DCIM_DB_USER=dcim
+DCIM_DB_PASSWD=changeme
 # port exposing the service by your container
-PORT=5000
+PORT=80
 
 ## don't change this
 VERSION=4.4
@@ -27,20 +29,25 @@ build:
 	@docker build --build-arg DBHOST=$(DBHOST) -t lucamaro/docker-opendcim:$(VERSION) .
 
 init_db:
-	@docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$(DBPASSWD) -d mariadb
+	@docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$(ROOT_DB_PASSWD) -d mariadb
 	@echo "Waiting for db to be up..."
 	@sleep 25
-	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "create database dcim"
-	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by '$(DCIMDBPASSWD)'"
+	@docker exec -it dcimdb mysql -uroot -p$(ROOT_DB_PASSWD) -e "create database $(DCIM_DB_SCHEMA)"
+	@docker exec -it dcimdb mysql -uroot -p$(ROOT_DB_PASSWD) -e "grant all privileges on $(DCIM_DB_SCHEMA).* to '$(DCIM_DB_USER)' identified by '$(DCIM_DB_PASSWD)'"
 
 backup_db:
-	@docker exec -it dcimdb sh -c "mysqldump -uroot -p$(DBPASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
+	@docker exec -it dcimdb sh -c "mysqldump -uroot -p$(ROOT_DB_PASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
 
 restore_db:
-	 @$(shell zcat dump.sql.gz | docker exec -i dcimdb mysql -uroot -p$(DBPASSWD))
+	 @$(shell zcat dump.sql.gz | docker exec -i dcimdb mysql -uroot -p$(ROOT_DB_PASSWD))
 	
 init_dcim:
-	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) $(DBLINK_OPT) $(DBLINK_PAIR) --name dcim  lucamaro/docker-opendcim:$(VERSION)
+	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) \
+		-e DCIM_DB_SCHEMA=$(DCIM_DB_SCHEMA) \
+		-e DCIM_DB_USER=$(DCIM_DB_USER) \
+		-e DCIM_DB_PASSWD=$(DCIM_DB_PASSWD) \
+		-e $(DBLINK_OPT) $(DBLINK_PAIR) \
+		--name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
 	@docker stop dcim
