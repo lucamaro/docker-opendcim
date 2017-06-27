@@ -46,7 +46,7 @@ init_dcim:
 		-e DCIM_DB_SCHEMA=$(DCIM_DB_SCHEMA) \
 		-e DCIM_DB_USER=$(DCIM_DB_USER) \
 		-e DCIM_DB_PASSWD=$(DCIM_DB_PASSWD) \
-		-e $(DBLINK_OPT) $(DBLINK_PAIR) \
+		$(DBLINK_OPT) $(DBLINK_PAIR) \
 		--name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
