@@ -1,6 +1,7 @@
 FROM php:5.6.30-apache
 MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
+ARG DBHOST
 ARG VERSION=4.4
  
 # some configuration for apache
@@ -30,7 +31,7 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && rm -R /var/www/html \
                     && chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
-                    && sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = 'db'/" /var/www/dcim/db.inc.php \
+                    && sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = '$(DBHOST)'/" /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
                     && a2enmod rewrite \

@@ -1,6 +1,8 @@
 # This file is part of lucamaro/docker-opendcim
 
 ## CUSTOMIZED VARIABLES
+# db hostname, don't change if you want to use the docker link to db container
+DBHOST=db
 # root password for mysql
 DBPASSWD=changeme
 # schema owner password
@@ -19,7 +21,7 @@ list:
 no_targets__:
 
 build:
-	@docker build -t lucamaro/docker-opendcim:$(VERSION) .
+	@docker build --build-arg DBHOST=$(DBHOST) -t lucamaro/docker-opendcim:$(VERSION) .
 
 init_db:
 	@docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$(DBPASSWD) -d mariadb
