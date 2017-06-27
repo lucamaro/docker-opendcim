@@ -14,11 +14,13 @@ You need docker installed, obviously. See documentation specific for your OS on 
 
 ## Usage
 
-To build container, customize DBPASS and PORT variable in Makefile, then use the command below:
+**First customize DBPASS, DCIMDBPASSWD and PORT variable in Makefile.**
+
+To build container image:
 
     $ make build
     
-To run db container **only for the first time** use the command below:
+To run db container **only for the first time**,  use the command below:
 
     $ make init_db
 

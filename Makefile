@@ -1,8 +1,16 @@
 # This file is part of lucamaro/docker-opendcim
 
+## CUSTOMIZED VARIABLES
+# root password for mysql
 DBPASSWD=changeme
-VERSION=4.4
+# schema owner password
+DCIMDBPASSWD=changeme
+# port exposing the service by your container
 PORT=80
+
+## don't change this
+VERSION=4.4
+
 
 # lists all available targets
 list:
@@ -18,8 +26,7 @@ init_db:
 	@echo "Waiting for db to be up..."
 	@sleep 25
 	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "create database dcim"
-	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by 'dcim'"
-
+	@docker exec -it dcimdb mysql -uroot -p$(DBPASSWD) -e "grant all privileges on dcim.* to 'dcim' identified by '$(DCIMDBPASSWD)'"
 
 backup_db:
 	@docker exec -it dcimdb sh -c "mysqldump -uroot -p$(DBPASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
