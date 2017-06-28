@@ -29,7 +29,8 @@ list:
 no_targets__:
 
 build:
-	@docker build --build-arg DBHOST=$(DBHOST) -t lucamaro/docker-opendcim:$(VERSION) .
+	@docker pull php:5-apache
+	@docker build -t lucamaro/docker-opendcim:$(VERSION) .
 
 init_db:
 	@docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$(ROOT_DB_PASSWD) -d mariadb

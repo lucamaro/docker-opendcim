@@ -1,4 +1,4 @@
-FROM php:5.6.30-apache
+FROM php:5-apache
 MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
 ARG VERSION=4.4
