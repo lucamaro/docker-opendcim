@@ -1,7 +1,6 @@
 FROM php:5.6.30-apache
 MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
-ARG DBHOST
 ARG VERSION=4.4
  
 # some configuration for apache
