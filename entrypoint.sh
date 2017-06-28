@@ -7,6 +7,7 @@ if [ ! -f /.configured ] ; then
 	sed -i "s/[$]dbname = [']dcim[']/\$dbname = '$DCIM_DB_SCHEMA'/" /var/www/dcim/db.inc.php 
 	sed -i "s/[$]dbuser = [']dcim[']/\$dbuser = '$DCIM_DB_USER'/" /var/www/dcim/db.inc.php 
 	sed -i "s/[$]dbpass = [']dcim[']/\$dbpass = '$DCIM_DB_PASSWD'/" /var/www/dcim/db.inc.php 
+	sed -i "s/Apache/LDAP/" /var/www/dcim/db.inc.php 
 	touch /.configured
 fi
 

@@ -12,6 +12,9 @@ ROOT_DB_PASSWD=changeme
 DCIM_DB_SCHEMA=dcim
 DCIM_DB_USER=dcim
 DCIM_DB_PASSWD=changeme
+# auth method
+DCIM_AUTH=Apache
+#DCIM_AUTH=LDAP
 # port exposing the service by your container
 PORT=80
 
@@ -46,12 +49,20 @@ init_dcim:
 		-e DCIM_DB_SCHEMA=$(DCIM_DB_SCHEMA) \
 		-e DCIM_DB_USER=$(DCIM_DB_USER) \
 		-e DCIM_DB_PASSWD=$(DCIM_DB_PASSWD) \
+		-e DCIM_AUTH=$(DCIM_AUTH) \
 		$(DBLINK_OPT) $(DBLINK_PAIR) \
 		--name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
 	@docker stop dcim
-	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) $(DBLINK_OPTS) --volumes-from=dcim --name dcim_next lucamaro/docker-opendcim:$(VERSION)
+	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) \
+		-e DCIM_DB_SCHEMA=$(DCIM_DB_SCHEMA) \
+		-e DCIM_DB_USER=$(DCIM_DB_USER) \
+		-e DCIM_DB_PASSWD=$(DCIM_DB_PASSWD) \
+		-e DCIM_AUTH=$(DCIM_AUTH) \
+		$(DBLINK_OPT) $(DBLINK_PAIR) \
+		--volumes-from=dcim \
+		--name dcim_next lucamaro/docker-opendcim:$(VERSION)
 
 update-after-install:
 	@docker exec -it dcim_next rm /var/www/dcim/install.php
