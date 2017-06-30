@@ -25,9 +25,6 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
 					&& ln -s /usr/lib/x86_64-linux-gnu/libldap.so /usr/lib/libldap.so \
 					&& ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so \
                     && docker-php-ext-install pdo pdo_mysql gettext snmp gd zip ldap\
-                    && apt-get clean \
-                    && rm -rf /tmp/* /var/tmp/* \
-                    && rm -rf /var/lib/apt/lists/* \
                     && mkdir -p /var/www && cd /var/www \
                     && wget -q -O - http://opendcim.org/packages/openDCIM-$VERSION.tar.gz | tar xzf - \
                     && mv /var/www/openDCIM-$VERSION /var/www/dcim \
@@ -37,6 +34,11 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
                     && a2enmod rewrite \
 					&& sed  -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/dcim/' /etc/apache2/sites-available/000-default.conf \
+					&& apt-get remove --auto-remove -y gcc m4 dpkg-dev libc6-dev libgcc-4.9-dev libsnmp-dev \
+					libpcre3-dev linux-libc-devlibldap2-dev libjpeg-dev libpng-dev \
+                    && apt-get clean \
+                    && rm -rf /tmp/* /var/tmp/* \
+                    && rm -rf /var/lib/apt/lists/* \
 
 COPY dcim.htaccess /var/www/dcim/.htaccess
 
