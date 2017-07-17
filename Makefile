@@ -18,6 +18,14 @@ DCIM_AUTH=Apache
 # port exposing the service by your container
 PORT=80
 
+# SSL configurations
+#SSL_ON=1
+#SSL_PORT=443
+#SSL_CONTAINER_PORT=443
+#SSL_DOCKER_OPT="-p$(SSL_CONTAINER_PORT):$(SSL_PORT)"
+#SSL_CERTS_VOLUME_OPT="-v"
+#SSL_CERTS_VOLUME_PATH="/docker-opendcim/certs:/etc/ssl/certs"
+
 ## don't change this
 VERSION=4.4
 
@@ -46,12 +54,14 @@ restore_db:
 	 @$(shell zcat dump.sql.gz | docker exec -i dcimdb mysql -uroot -p$(ROOT_DB_PASSWD))
 	
 init_dcim:
-	@docker run -d -p $(PORT):80 -e DBHOST=$(DBHOST) \
+	@docker run -d -p $(PORT):80 $(SSL_DOCKER_OPT) \
+		-e DBHOST=$(DBHOST) \
 		-e DCIM_DB_SCHEMA=$(DCIM_DB_SCHEMA) \
 		-e DCIM_DB_USER=$(DCIM_DB_USER) \
 		-e DCIM_DB_PASSWD=$(DCIM_DB_PASSWD) \
 		-e DCIM_AUTH=$(DCIM_AUTH) \
 		$(DBLINK_OPT) $(DBLINK_PAIR) \
+		-e SSL_ON=$(SSL_ON) \
 		--name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
@@ -91,3 +101,7 @@ stop:
 
 logs:
 	@docker logs dcim
+
+generate_certs:
+	@mkdir -p certs
+	@openssl req -x509 -newkey rsa:4096 -keyout certs/ssl-cert.key -out certs/ssl-cert.pem -days 365 -nodes
