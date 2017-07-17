@@ -8,11 +8,13 @@ COPY apache2.conf /etc/apache2/apache2.conf
 
 # enable localization, see locale-gen below
 COPY locale.gen /etc
+COPY 000-default.conf /etc/apache2/sites-available
+COPY default-ssl.conf /etc/apache2/sites-available
 
 # Installation of nesesary package/software for this containers...
 RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/apt/sources.list && \
     sed -i 's/jessie main/jessie main contrib non-free/' /etc/apt/sources.list &&  \
-    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends \
                     snmp \
                     snmp-mibs-downloader \
                     graphviz \
@@ -38,7 +40,7 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
 					libpcre3-dev linux-libc-devlibldap2-dev libjpeg-dev libpng-dev \
                     && apt-get clean \
                     && rm -rf /tmp/* /var/tmp/* \
-                    && rm -rf /var/lib/apt/lists/* \
+                    && rm -rf /var/lib/apt/lists/* 
 
 COPY dcim.htaccess /var/www/dcim/.htaccess
 
