@@ -35,7 +35,6 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && mkdir /var/www/secure \
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
                     && a2enmod rewrite \
-                    && sed  -i 's/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/dcim/' /etc/apache2/sites-available/000-default.conf \
                     && apt-get remove --auto-remove -y gcc m4 dpkg-dev libc6-dev libgcc-4.9-dev libsnmp-dev \
                     libpcre3-dev linux-libc-dev libldap2-dev libjpeg-dev libpng-dev \
                     && apt-get clean \
