@@ -3,7 +3,7 @@ MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
 ARG VERSION=4.4
  
-# some configuration for apache
+# some	 configuration for apache
 COPY apache2.conf /etc/apache2/apache2.conf
 
 # enable localization, see locale-gen below
@@ -23,12 +23,12 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     libldap2-dev \
                     # See https://serverfault.com/questions/633394/php-configure-not-finding-ldap-header-libraries
                     && ln -s /usr/lib/x86_64-linux-gnu/libldap.so /usr/lib/libldap.so \
-                    && ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so 
-RUN docker-php-ext-install pdo pdo_mysql gettext snmp gd zip ldap
-RUN mkdir -p /var/www && cd /var/www \
+                    && ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so \
+                    && docker-php-ext-instll pdo pdo_mysql gettext snmp gd zip ldap \
+                    && mkdir -p /var/www && cd /var/www \
                     && wget -q -O - http://opendcim.org/packages/openDCIM-$VERSION.tar.gz | tar xzf - \
-                    && mv /var/www/openDCIM-$VERSION /var/www/dcim
-RUN chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
+                    && mv /var/www/openDCIM-$VERSION /var/www/dcim \
+                    && chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
