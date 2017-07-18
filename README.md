@@ -6,6 +6,8 @@ This was based initially on work of angelrr7702 (thank you for letting me start!
 - layers were reduced in Dockerfile
 - backup/restore is done in a more standard way
 - starting image was changed to mariadb and php-apache (officials)
+- added SSL configuration parameters and tasks
+- added LDAP configuration parameters
 
 ## Requirements
 
@@ -14,12 +16,17 @@ You need docker installed, obviously. See documentation specific for your OS on 
 
 ## Usage
 
-**First customize DBPASS, DCIMDBPASSWD and PORT variable in Makefile.**
 
 To build container image:
 
     $ make build
     
+**First customize DBPASS, DCIMDBPASSWD and PORT variable in Makefile.**
+
+If you want to use SSL, customize SSL parameters in Makefile. Optionally use 
+the task `generate-certs` to generate self signed certificates in the correct 
+ezpected by volume option (see Makefile init_dcim task).
+
 To run db container **only for the first time**,  use the command below:
 
     $ make init_db
