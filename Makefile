@@ -21,10 +21,8 @@ PORT=80
 # SSL configurations
 #SSL_ON=1
 #SSL_PORT=443
-#SSL_CONTAINER_PORT=443
-#SSL_DOCKER_OPT="-p$(SSL_CONTAINER_PORT):$(SSL_PORT)"
 #SSL_CERTS_VOLUME_OPT="-v"
-#SSL_CERTS_VOLUME_PATH="/docker-opendcim/certs:/etc/ssl/certs"
+#SSL_CERTS_VOLUME_PATH_PAIR="/work/docker-opendcim/certs:/etc/ssl/certs"
 
 ## don't change this
 VERSION=4.4
@@ -52,9 +50,10 @@ backup_db:
 
 restore_db:
 	 @$(shell zcat dump.sql.gz | docker exec -i dcimdb mysql -uroot -p$(ROOT_DB_PASSWD))
-	
+
+#TODO: SSL_PORT optional paramenter wll be addressed in sh script	
 init_dcim:
-	@docker run -d -p $(PORT):80 $(SSL_DOCKER_OPT) \
+	@docker run -d -p $(PORT):80 \
 		-e DBHOST=$(DBHOST) \
 		-e DCIM_DB_SCHEMA=$(DCIM_DB_SCHEMA) \
 		-e DCIM_DB_USER=$(DCIM_DB_USER) \
@@ -62,6 +61,8 @@ init_dcim:
 		-e DCIM_AUTH=$(DCIM_AUTH) \
 		$(DBLINK_OPT) $(DBLINK_PAIR) \
 		-e SSL_ON=$(SSL_ON) \
+		$(SSL_CERTS_VOLUME_OPT) $(SSL_CERTS_VOLUME_PATH_PAIR) \
+		-p $(SSL_PORT):443 \
 		--name dcim  lucamaro/docker-opendcim:$(VERSION)
 
 update:
