@@ -16,11 +16,6 @@ You need docker installed, obviously. See documentation specific for your OS on 
 
 ## Usage
 
-
-To build container image:
-
-    $ make build
-    
 **First customize DBPASS, DCIMDBPASSWD and PORT variable in Makefile.**
 
 If you want to use SSL, customize SSL parameters in Makefile. Optionally use 
@@ -54,21 +49,12 @@ To access the container from the server that the container is running :
     $ docker exec -it dcim /bin/bash
     $ docker exec -it dcimdb /bin/bash
 
-note: deploy this container behind proxy with SSL :
-
-https://github.com/jwilder/nginx-proxy
-
-https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion
 
 ## Updating container
 
 First keep updated this repository:
 
-    $ git pull
-
-Then build the new image (see VERSION variable in Makefile):
-
-    $ make build
+    $ docker pull lucamaro/opendcim-4.4:latest
     
 Execute update in temporary container dcim_next:
 
