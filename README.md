@@ -22,7 +22,6 @@ First customize the environment file `dev.env` with the following content:
 	DCIM_DB_SCHEMA=dcim
 	DCIM_DB_USER=dcim
 	DCIM_DB_PASSWD=changeme
-	DCIM_AUTH=Apache
 
 Run image customizing this command
 
@@ -84,7 +83,15 @@ Optionally generate self signed certificates with the following commands:
 	
 ### Optional step: enable LDAP auth
 
-[To be documented]
+After openDCIM is working with admin permissions (i.e. dcim user) go to "Edit Configuration" menu --> LDAP tab and configure all 
+the parameters according to your LDAP configuration.
+
+Then, disable basic auth and enable LDAP auth:
+	
+	docker exec -it dcim mv /var/www/dcim/.htaccess /var/www/dcim/.htaccess.no
+	docker exec -it dcim sed -i "s/Apache/LDAP/" /var/www/dcim/db.inc.php
+	
+Now you should be able to login with LDAP users credentials.
 	
 ## Updating container
 
