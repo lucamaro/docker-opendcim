@@ -1,7 +1,8 @@
 FROM php:5-apache
 MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
 
-ARG VERSION=4.4
+ARG OPENDCIMPATH=https://github.com/samilliken/openDCIM/archive
+ARG OPENDCIMFILE=master
  
 # some	 configuration for apache
 COPY apache2.conf /etc/apache2/apache2.conf
@@ -26,8 +27,10 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so \
                     && docker-php-ext-install pdo pdo_mysql gettext snmp gd zip ldap \
                     && mkdir -p /var/www && cd /var/www \
-                    && wget -q -O - http://opendcim.org/packages/openDCIM-$VERSION.tar.gz | tar xzf - \
-                    && mv /var/www/openDCIM-$VERSION /var/www/dcim \
+                    && wget -q $OPENDCIMPATH/$OPENDCIMFILE.zip \
+                    && unzip $OPENDCIMFILE \
+                    && rm -f $OPENDCIMFILE.zip \
+                    && mv /var/www/openDCIM-$OPENDCIMFILE /var/www/dcim \
                     && chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
