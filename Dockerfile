@@ -22,6 +22,7 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     libjpeg-dev \
                     locales \
                     libldap2-dev \
+                    unzip \
                     # See https://serverfault.com/questions/633394/php-configure-not-finding-ldap-header-libraries
                     && ln -s /usr/lib/x86_64-linux-gnu/libldap.so /usr/lib/libldap.so \
                     && ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so \
