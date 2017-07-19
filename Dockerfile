@@ -52,4 +52,4 @@ VOLUME ["/var/www/dcim/drawings", "/var/www/dcim/pictures", "/var/www/dcim/image
 
 # init script as entrypoint for initial configuration
 COPY entrypoint.sh /usr/local/bin
-ENTRYPOINT ["entrypoint.sh", "-DFOREGROUND"]
+ENTRYPOINT ["sh", "/usr/local/bin/entrypoint.sh", "-DFOREGROUND"]
