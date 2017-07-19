@@ -40,7 +40,7 @@ Reload the main site page and start enjoying opneDCIM.
 	
 To change dcim web user credential or to add new users:
 	
-	docker exec -it dcim htpasswd /var/www/secure/opendcim.password dcim			
+	docker exec -it dcim htpasswd /var/www/secure/opendcim.password dcim
 	
 	
 ### Optional step: create an empty db
@@ -89,8 +89,8 @@ Optionally generate self signed certificates with the following commands:
 
 First keep updated this repository:
 
-    docker pull lucamaro/docker-opendcim
-    
+	docker pull lucamaro/docker-opendcim
+	
 Execute update in temporary container dcim_next:
 
 	docker stop dcim
@@ -102,7 +102,7 @@ Access the new webapp via browser or http client to launch the install.php scrip
 then perform the after-install operation on new container:
 
 	docker exec -it dcim rm /var/www/dcim/install.php
-    
+	
 If everything is ok, delete old container:
 
 	docker rm dcim
@@ -113,7 +113,7 @@ If everything is ok, delete old container:
 
 Launch a new container with ``--volumes-from`` directive, then use tar utility to create backup.
 
-    docker run --rm --volumes-from=dcim \
+	docker run --rm --volumes-from=dcim \
 			-v $PWD:/dcim_backup alpine \
 			tar cvzf /dcim_backup/dcim_backup.tgz \
 					/var/www/dcim/pictures \
@@ -122,12 +122,12 @@ Launch a new container with ``--volumes-from`` directive, then use tar utility t
 					/var/www/secure \
 					/db_backup
 
-Backup archive is in your current dierectory.					
+Backup archive is in your current dierectory.
 					
 If you are using db on docker image as described before:
 					
 	docker exec -it dcimdb sh -c "mysqldump -uroot -p$(ROOT_DB_PASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
-    docker run --rm --volumes-from=dcim --volumes-from=dcimdb \
+	docker run --rm --volumes-from=dcim --volumes-from=dcimdb \
 			-v $PWD:/dcim_backup alpine \
 			tar cvzf /dcim_backup/dcim_backup.tgz \
 					/var/www/dcim/pictures \
@@ -138,4 +138,4 @@ If you are using db on docker image as described before:
 
 ## Restore db data
 
-[ to be documented ]	
+[ to be documented ]
