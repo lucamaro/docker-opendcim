@@ -22,6 +22,7 @@ First customize the environment file `dev.env` with the following content:
 	DCIM_DB_SCHEMA=dcim
 	DCIM_DB_USER=dcim
 	DCIM_DB_PASSWD=changeme
+	DCIM_AUTH=Apache
 
 Run image customizing this command
 
