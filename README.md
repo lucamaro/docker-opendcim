@@ -16,68 +16,118 @@ You need docker installed, obviously. See documentation specific for your OS on 
 
 ## Usage
 
-**First customize DBPASS, DCIMDBPASSWD and PORT variable in Makefile.**
+First customize the environment file `dev.env` with the following content:
 
-If you want to use SSL, customize SSL parameters in Makefile. Optionally use 
-the task `generate-certs` to generate self signed certificates in the correct 
-ezpected by volume option (see Makefile init_dcim task).
+	DBHOST=dcimdb.yournetwork
+	DCIM_DB_SCHEMA=dcim
+	DCIM_DB_USER=dcim
+	DCIM_DB_PASSWD=changeme
 
-To run db container **only for the first time**,  use the command below:
+Run image customizing this command
 
-    $ make init_db
+	docker run -d -p 8000:80 \
+			--env-file dev.env \
+			--name dcim lucamaro/docker-opendcim
 
-This will create dcimdb (mariadb instance).
+Then access for the first time the webapp at http://localhost:8000 with (default credentials: dcim/dcim). 
+It displays the installation report that should be correct.
 
-Run dcim container:
+After this you **must** perform after installation procedure:
 
-    $ make init_dcim
+	docker exec -it dcim rm /var/www/dcim/install.php
 
-## Accessing the opendcim applications:
+Reload the main site page and start enjoying opneDCIM.
+	
+To change dcim web user credential or to add new users:
+	
+	docker exec -it dcim htpasswd /var/www/secure/opendcim.password dcim			
+	
+	
+### Optional step: create an empty db
+			
+If you need a db on the fly you could run a docker image like this:
+	
+	source dev.env
+	docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$ROOT_DB_PASSWD -d mariadb
 
-After that check with your browser at addresses:
+Waiting for db to be up, then:
 
-  - **http://host_ip/**
+	docker exec -it dcimdb mysql -uroot -p$ROOT_DB_PASSWD -e "create database $DCIM_DB_SCHEMA"
+	docker exec -it dcimdb mysql -uroot -p$ROOT_DB_PASSWD -e "grant all privileges on $DCIM_DB_SCHEMA.* to '$DCIM_DB_USER' identified by '$DCIM_DB_PASSWD'"
 
-Log in using login/password dcim/dcim  please replace it after initial web install with command :
+Run the dcim web container with a link named db:
+	
+	docker run -d -p 8000:80 \
+			--env-file dev.env \
+			--link dcimdb:db \
+			--name dcim lucamaro/docker-opendcim
+	
+### Optional step: use TLS
 
-    $ make after-install
-    
-This will ask for new password for dcim user and it will remove the install script for security.
+In order to use TLS, first add to env file the parameter:
 
-To access the container from the server that the container is running :
+	SSL_ON=1
 
-    $ docker exec -it dcim /bin/bash
-    $ docker exec -it dcimdb /bin/bash
+You must run the image with a volume containing certificate and key. Certificate name must be `ssl-cert.pem` and key must be `ssl-cert.key`
 
+	docker run -d -p 8443:443 \
+			--env-file dev.env \
+			-v $PWD/certs:/etc/ssl/certs \
+			--name dcim lucamaro/docker-opendcim
 
+Optionally generate self signed certificates with the following commands:
+
+	mkdir -p certs
+	openssl req -x509 -newkey rsa:4096 -keyout certs/ssl-cert.key -out certs/ssl-cert.pem -days 365 -nodes
+
+	
+### Optional step: enable LDAP auth
+
+[To be documented]
+	
 ## Updating container
 
 First keep updated this repository:
 
-    $ docker pull lucamaro/opendcim-4.4:latest
+    docker pull lucamaro/docker-opendcim
     
 Execute update in temporary container dcim_next:
 
-    $ make update
+	docker stop dcim
+	docker run -d -p 8000:80 --env-file dev.txt\
+		--volumes-from=dcim \
+		--name dcim_next lucamaro/docker-opendcim
 
 Access the new webapp via browser or http client to launch the install.php script, 
 then perform the after-install operation on new container:
 
-    $ make update-after-install
+	docker exec -it dcim rm /var/www/dcim/install.php
     
 If everything is ok, delete old container:
 
-    $ make confirm_update
+	docker rm dcim
+	docker rename dcim_next dcim
 
-else...
-
-    $ make undo_update
 
 ## Backup containers data
 
 Launch a new container with ``--volumes-from`` directive, then use tar utility to create backup.
 
-    $ docker run --rm --volumes-from=dcim --volumes-from=dcimdb \
+    docker run --rm --volumes-from=dcim \
+			-v $PWD:/dcim_backup alpine \
+			tar cvzf /dcim_backup/dcim_backup.tgz \
+					/var/www/dcim/pictures \
+					/var/www/dcim/drawings \
+					/var/www/dcim/images \
+					/var/www/secure \
+					/db_backup
+
+Backup archive is in your current dierectory.					
+					
+If you are using db on docker image as described before:
+					
+	docker exec -it dcimdb sh -c "mysqldump -uroot -p$(ROOT_DB_PASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
+    docker run --rm --volumes-from=dcim --volumes-from=dcimdb \
 			-v $PWD:/dcim_backup alpine \
 			tar cvzf /dcim_backup/dcim_backup.tgz \
 					/var/www/dcim/pictures \
@@ -88,7 +138,4 @@ Launch a new container with ``--volumes-from`` directive, then use tar utility t
 
 ## Restore db data
 
-Retrieve dump.sql.gz from the backup created above, then:
-
-	make restore_db
-	
+[ to be documented ]	
