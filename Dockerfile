@@ -13,7 +13,8 @@ COPY locale.gen /etc
 # Installation of nesesary package/software for this containers...
 RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/apt/sources.list && \
     sed -i 's/jessie main/jessie main contrib non-free/' /etc/apt/sources.list &&  \
-    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends \
+    apt-get update && export DEBIAN_FRONTEND=noninteractive \
+	&& apt-get upgrade -y && apt-get install -y -q --no-install-recommends \
                     snmp \
                     snmp-mibs-downloader \
                     graphviz \
