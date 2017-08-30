@@ -1,5 +1,5 @@
 FROM php:5-apache
-MAINTAINER Luca Maragnani "luca.maragnani@gmail.com"
+LABEL mantainer="luca.maragnani@gmail.com"
 
 ARG OPENDCIMPATH=https://github.com/samilliken/openDCIM/archive
 ARG OPENDCIMFILE=master
