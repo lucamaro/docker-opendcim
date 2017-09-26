@@ -33,7 +33,7 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && unzip $OPENDCIMFILE \
                     && rm -f $OPENDCIMFILE.zip \
                     && mv /var/www/openDCIM-$OPENDCIMFILE /var/www/dcim \
-                    && chgrp -R www-data /var/www/dcim/pictures /var/www/dcim/drawings /var/www/dcim/images \
+                    && chown -R www-data:www-data /var/www/dcim \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
                     && mkdir /var/www/secure \
                     && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
