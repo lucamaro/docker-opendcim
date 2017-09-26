@@ -2,7 +2,7 @@ FROM php:5-apache
 LABEL mantainer="luca.maragnani@gmail.com"
 
 ARG OPENDCIMPATH=https://github.com/samilliken/openDCIM/archive
-ARG OPENDCIMFILE=master
+ARG OPENDCIMFILE=4.5
  
 # some	 configuration for apache
 COPY apache2.conf /etc/apache2/apache2.conf
