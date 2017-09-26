@@ -48,6 +48,7 @@ To change dcim web user credential or to add new users:
 If you need a db on the fly you could run a docker image like this:
 	
 	source dev.env
+	ROOT_DB_PASSWD=mysecretpasswd
 	docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$ROOT_DB_PASSWD -d mariadb
 
 Waiting for db to be up, then:
