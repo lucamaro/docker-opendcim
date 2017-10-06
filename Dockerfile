@@ -42,7 +42,9 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     libpcre3-dev linux-libc-dev libldap2-dev libjpeg-dev libpng-dev \
                     && apt-get clean \
                     && rm -rf /tmp/* /var/tmp/* \
-                    && rm -rf /var/lib/apt/lists/* 
+                    && rm -rf /var/lib/apt/lists/* \
+                    # disable error printing to avoid redirection failure when installing
+                    && echo "display_errors = Off"  | tee /usr/local/etc/php/php.ini
 
 COPY dcim.htaccess /var/www/dcim/.htaccess
 COPY 000-default.conf /etc/apache2/sites-available
