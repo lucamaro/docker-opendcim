@@ -50,9 +50,8 @@ COPY dcim.htaccess /var/www/dcim/.htaccess
 COPY 000-default.conf /etc/apache2/sites-available
 COPY default-ssl.conf /etc/apache2/sites-available
 
-# to allow access from outside of the container  to the container service
-# at that ports need to allow access from firewall if need to access it outside of the server. 
-EXPOSE 80
+# apply patch for broken redirection when running on non standard ports
+COPY patches/misc.inc.php /var/www/dcim/
 
 # declaration of volumes 
 VOLUME ["/var/www/dcim/drawings", "/var/www/dcim/pictures", "/var/www/dcim/images", "/var/www/secure"]
