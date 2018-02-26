@@ -14,14 +14,29 @@ if [ ! -f /.configured ] ; then
 	fi
 
 	# for swarm secret
-	if [ -f "$DCIM_PASSWORD_FILE" ] ; then
-		PASSWORD=$(cat $DCIM_PASSWORD_FILE)
-	elif [ ! -z "$DCIM_PASSWORD" ] ; then
-		PASSWORD=$DCIM_PASSWORD
+	if [ -f "$DCIM_PASSWD_FILE" ] ; then
+		PASSWORD=$(cat $DCIM_PASSWD_FILE)
+	elif [ ! -z "$DCIM_PASSWD" ] ; then
+		PASSWORD=$DCIM_PASSWD
 	else
 		PASSWORD=dcim
 	fi
 	htpasswd -cb /data/opendcim.password dcim $PASSWORD
+
+	cd /var/www/dcim
+	for D in images pictures drawings ; do
+		if [ ! -d /data/$D ] ; then
+			mkdir /data/$D
+		fi
+
+		if [ -d /var/www/dcim/$D ] ; then 
+			mv /var/www/dcim/$D/* /data/$D
+			rm -rf /var/www/dcim/$D
+			ln -s /data/$D .
+		fi
+
+		chown www-data:www-data /data/$D
+	done	
 
 	touch /.configured
 fi

@@ -14,7 +14,7 @@ COPY locale.gen /etc
 RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/apt/sources.list && \
     sed -i 's/jessie main/jessie main contrib non-free/' /etc/apt/sources.list &&  \
     apt-get update && export DEBIAN_FRONTEND=noninteractive \
-	&& apt-get upgrade -y && apt-get install -y -q --no-install-recommends \
+	&& apt-get install -y -q --no-install-recommends \
                     snmp \
                     snmp-mibs-downloader \
                     graphviz \
@@ -34,8 +34,6 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && rm -f $OPENDCIMFILE.zip \
                     && mv /var/www/openDCIM-$OPENDCIMFILE /var/www/dcim \
                     && chown -R www-data:www-data /var/www/dcim \
-                    && cd /var/www/dcim && mv images /data && mv pictures /data && mv drawings /data \
-                    && ln -s /data/images . && ln -s /data/pictures . && ln -s /data/drawings . \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
                     && a2enmod rewrite \
                     && apt-get remove --auto-remove -y gcc m4 dpkg-dev libc6-dev libgcc-4.9-dev libsnmp-dev \

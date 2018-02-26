@@ -25,7 +25,7 @@ PORT=80
 #SSL_CERTS_VOLUME_PATH_PAIR="/work/docker-opendcim/certs:/etc/ssl/certs"
 
 ## don't change this
-VERSION=4.5
+VERSION=4.5-d2
 
 
 # lists all available targets
