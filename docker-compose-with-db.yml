@@ -1,0 +1,73 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: "/var/run/secrets/opendcim_db_root_pwd"
+    volumes:
+      - opendcim_db:/var/lib/mysql
+    secrets: 
+      - opendcim_db_root_pwd
+    networks:
+      - database_net
+    deploy:
+      restart_policy:
+        condition: any
+        
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - reverse_proxy_net
+      - database_net
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.port: "8080"
+        traefik.docker.network: "reverse_proxy_net"
+      restart_policy:
+        condition: any
+
+  webapp:
+    image: lucamaro/docker-opendcim:4.5
+    environment:
+      DBHOST: db
+      DCIM_DB_SCHEMA: dcim
+      DCIM_DB_USER: dcim
+      DCIM_DB_PASSWD: changeme
+      DCIM_PASSWD_FILE: /var/run/secrets/opendcim_password
+    volumes:
+      - opendcim_data:/data
+    secrets: 
+      - opendcim_password
+    networks:
+      - reverse_proxy_net
+      - database_net
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.port: "80"
+        traefik.docker.network: "reverse_proxy_net"
+
+secrets:
+  opendcim_db_root_pwd:
+    external: true
+  opendcim_password:
+    external: true
+
+volumes:
+  opendcim_db:
+    external: true
+  opendcim_data:
+    external: true
+    
+networks:
+  reverse_proxy_net:
+    external: true
+  database_net:
+    external: true
+
+
