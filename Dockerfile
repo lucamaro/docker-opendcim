@@ -34,9 +34,9 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && rm -f $OPENDCIMFILE.zip \
                     && mv /var/www/openDCIM-$OPENDCIMFILE /var/www/dcim \
                     && chown -R www-data:www-data /var/www/dcim \
+                    && cd /var/www/dcim && mv images /data && mv pictures /data && mv drawings /data \
+                    && ln -s /data/images . && ln -s /data/pictures . && ln -s /data/drawings . \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
-                    && mkdir /var/www/secure \
-                    && htpasswd -cb /var/www/secure/opendcim.password dcim dcim \
                     && a2enmod rewrite \
                     && apt-get remove --auto-remove -y gcc m4 dpkg-dev libc6-dev libgcc-4.9-dev libsnmp-dev \
                     libpcre3-dev linux-libc-dev libldap2-dev libjpeg-dev libpng-dev \
@@ -54,7 +54,7 @@ COPY default-ssl.conf /etc/apache2/sites-available
 COPY patches/misc.inc.php /var/www/dcim/
 
 # declaration of volumes 
-VOLUME ["/var/www/dcim/drawings", "/var/www/dcim/pictures", "/var/www/dcim/images", "/var/www/secure"]
+VOLUME ["/data"]
 
 # init script as entrypoint for initial configuration
 COPY entrypoint.sh /usr/local/bin

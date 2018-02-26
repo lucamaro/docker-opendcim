@@ -12,6 +12,17 @@ if [ ! -f /.configured ] ; then
 		a2enmod ssl
 		a2ensite default-ssl
 	fi
+
+	# for swarm secret
+	if [ -f "$DCIM_PASSWORD_FILE" ] ; then
+		PASSWORD=$(cat $DCIM_PASSWORD_FILE)
+	elif [ ! -z "$DCIM_PASSWORD" ] ; then
+		PASSWORD=$DCIM_PASSWORD
+	else
+		PASSWORD=dcim
+	fi
+	htpasswd -cb /data/opendcim.password dcim $PASSWORD
+
 	touch /.configured
 fi
 

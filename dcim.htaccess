@@ -1,4 +1,4 @@
 AuthType Basic
 AuthName "openDCIM"
-AuthUserFile /var/www/secure/opendcim.password
+AuthUserFile /data/opendcim.password
 Require valid-user
