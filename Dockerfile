@@ -33,7 +33,6 @@ RUN sed -i 's/jessie\/updates main/jessie\/updates main contrib non-free/' /etc/
                     && unzip $OPENDCIMFILE \
                     && rm -f $OPENDCIMFILE.zip \
                     && mv /var/www/openDCIM-$OPENDCIMFILE /var/www/dcim \
-                    && chown -R www-data:www-data /var/www/dcim \
                     && cp /var/www/dcim/db.inc.php-dist /var/www/dcim/db.inc.php \
                     && a2enmod rewrite \
                     && apt-get remove --auto-remove -y gcc m4 dpkg-dev libc6-dev libgcc-4.9-dev libsnmp-dev \
