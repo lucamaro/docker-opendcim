@@ -80,7 +80,7 @@ You must run the image with a volume containing certificate and key. Certificate
 Optionally generate self signed certificates with the following commands:
 
 	mkdir -p certs
-	openssl req -x509 -newkey rsa:4096 -keyout certs/ssl-cert.key -out certs/ssl-cert.pem -days 365 -nodes
+	openssl req -x509 -newkey rsa:4096 -keyout certs/ssl-cert.key -out certs/ssl-cert.pem -days 365 -nodes -subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com"
 
 	
 ### Optional step: enable LDAP auth
