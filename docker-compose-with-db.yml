@@ -39,6 +39,8 @@ services:
       DCIM_DB_USER: dcim
       DCIM_DB_PASSWD: changeme
       DCIM_PASSWD_FILE: /var/run/secrets/opendcim_password
+      SSL_CERT_FILE: /var/run/secrets/opendcim-ssl-cert.pem
+      SSL_KEY_FILE: /var/run/secrets/opendcim-ssl-cert.key
     volumes:
       - opendcim_data:/data
     secrets: 
@@ -56,6 +58,10 @@ secrets:
   opendcim_db_root_pwd:
     external: true
   opendcim_password:
+    external: true
+  opendcim-ssl-cert.key:
+  	external: true
+  opendcim-ssl-cert.pem:
     external: true
 
 volumes:

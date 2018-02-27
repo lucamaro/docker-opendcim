@@ -11,6 +11,9 @@ if [ ! -f /.configured ] ; then
 	if [ "$SSL_ON" = "1" ] ; then
 		a2enmod ssl
 		a2ensite default-ssl
+		cd /etc/ssl/certs/
+		ln -s $SSL_CERT_FILE ssl-cert.pem
+		ln -s $SSL_KEY_FILE ssl-cert.key
 	fi
 
 	# for swarm secret
