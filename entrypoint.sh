@@ -3,17 +3,17 @@
 
 if [ ! -f /.configured ] ; then
 	# configure port with environment var DBHOST
-	sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = '$DBHOST'/" /var/www/dcim/db.inc.php 
-	sed -i "s/[$]dbname = [']dcim[']/\$dbname = '$DCIM_DB_SCHEMA'/" /var/www/dcim/db.inc.php 
-	sed -i "s/[$]dbuser = [']dcim[']/\$dbuser = '$DCIM_DB_USER'/" /var/www/dcim/db.inc.php 
-	sed -i "s/[$]dbpass = [']dcim[']/\$dbpass = '$DCIM_DB_PASSWD'/" /var/www/dcim/db.inc.php 
+	sed -i "s/[$]dbhost = [']localhost[']/\$dbhost = '$DBHOST'/" /var/www/dcim/db.inc.php
+	sed -i "s/[$]dbname = [']dcim[']/\$dbname = '$DCIM_DB_SCHEMA'/" /var/www/dcim/db.inc.php
+	sed -i "s/[$]dbuser = [']dcim[']/\$dbuser = '$DCIM_DB_USER'/" /var/www/dcim/db.inc.php
+	sed -i "s/[$]dbpass = [']dcim[']/\$dbpass = '$DCIM_DB_PASSWD'/" /var/www/dcim/db.inc.php
 
 	if [ "$SSL_ON" = "1" ] ; then
 		a2enmod ssl
 		a2ensite default-ssl
 		cd /etc/ssl/certs/
-		ln -s $SSL_CERT_FILE ssl-cert.pem
-		ln -s $SSL_KEY_FILE ssl-cert.key
+		cp $SSL_CERT_FILE ssl-cert.pem
+		cp $SSL_KEY_FILE ssl-cert.key
 	fi
 
 	# for swarm secret
@@ -32,14 +32,14 @@ if [ ! -f /.configured ] ; then
 			mkdir /data/$D
 		fi
 
-		if [ -d /var/www/dcim/$D ] ; then 
+		if [ -d /var/www/dcim/$D ] ; then
 			mv /var/www/dcim/$D/* /data/$D
 			rm -rf /var/www/dcim/$D
 			ln -s /data/$D .
 		fi
 
 		chown www-data:www-data /data/$D
-	done	
+	done
 
 	touch /.configured
 fi

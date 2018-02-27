@@ -9,14 +9,14 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: "/var/run/secrets/opendcim_db_root_pwd"
     volumes:
       - opendcim_db:/var/lib/mysql
-    secrets: 
+    secrets:
       - opendcim_db_root_pwd
     networks:
       - database_net
     deploy:
       restart_policy:
         condition: any
-        
+
   adminer:
     image: adminer
     restart: always
@@ -38,13 +38,15 @@ services:
       DCIM_DB_SCHEMA: dcim
       DCIM_DB_USER: dcim
       DCIM_DB_PASSWD: changeme
-      DCIM_PASSWD_FILE: /var/run/secrets/opendcim_password
-      SSL_CERT_FILE: /var/run/secrets/opendcim-ssl-cert.pem
-      SSL_KEY_FILE: /var/run/secrets/opendcim-ssl-cert.key
+      DCIM_PASSWD_FILE: "/var/run/secrets/opendcim_password"
+      SSL_CERT_FILE: "/var/run/secrets/opendcim-ssl-cert.pem"
+      SSL_KEY_FILE: "/var/run/secrets/opendcim-ssl-cert.key"
     volumes:
       - opendcim_data:/data
-    secrets: 
+    secrets:
       - opendcim_password
+      - opendcim-ssl-cert.key
+      - opendcim-ssl-cert.pem
     networks:
       - reverse_proxy_net
       - database_net
@@ -60,7 +62,7 @@ secrets:
   opendcim_password:
     external: true
   opendcim-ssl-cert.key:
-  	external: true
+    external: true
   opendcim-ssl-cert.pem:
     external: true
 
@@ -69,7 +71,7 @@ volumes:
     external: true
   opendcim_data:
     external: true
-    
+
 networks:
   reverse_proxy_net:
     external: true
