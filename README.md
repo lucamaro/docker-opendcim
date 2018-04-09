@@ -30,7 +30,7 @@ Run image customizing this command
 			--env-file dev.env \
 			--name dcim lucamaro/docker-opendcim
 
-Then access for the first time the webapp at http://localhost:8000 with (default credentials: dcim/dcim). 
+Then access for the first time the webapp at http://localhost:8000 with (default credentials: dcim/dcim).
 It displays the installation report that should be correct.
 
 After this you **must** perform after installation procedure:
@@ -38,16 +38,16 @@ After this you **must** perform after installation procedure:
 	docker exec -it dcim rm /var/www/dcim/install.php
 
 Reload the main site page and start enjoying opneDCIM.
-	
+
 To change dcim web user credential or to add new users:
-	
+
 	docker exec -it dcim htpasswd /var/www/secure/opendcim.password dcim
-	
-	
+
+
 ### Optional step: create an empty db
-			
+
 If you need a db on the fly you could run a docker image like this:
-	
+
 	source dev.env
 	ROOT_DB_PASSWD=mysecretpasswd
 	docker run --name dcimdb -v /db_backup -e MYSQL_ROOT_PASSWORD=$ROOT_DB_PASSWD -d mariadb
@@ -58,17 +58,13 @@ Waiting for db to be up, then:
 	docker exec -it dcimdb mysql -uroot -p$ROOT_DB_PASSWD -e "grant all privileges on $DCIM_DB_SCHEMA.* to '$DCIM_DB_USER' identified by '$DCIM_DB_PASSWD'"
 
 Run the dcim web container with a link named db:
-	
+
 	docker run -d -p 8000:80 \
 			--env-file dev.env \
 			--link dcimdb:db \
 			--name dcim lucamaro/docker-opendcim
-	
+
 ### Optional step: use TLS
-
-In order to use TLS, first add to env file the parameter:
-
-	SSL_ON=1
 
 You must run the image with a volume containing certificate and key. Certificate name must be `ssl-cert.pem` and key must be `ssl-cert.key`
 
@@ -82,25 +78,25 @@ Optionally generate self signed certificates with the following commands:
 	mkdir -p certs
 	openssl req -x509 -newkey rsa:4096 -keyout certs/ssl-cert.key -out certs/ssl-cert.pem -days 365 -nodes -subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com"
 
-	
+
 ### Optional step: enable LDAP auth
 
-After openDCIM is working with admin permissions (i.e. dcim user) go to "Edit Configuration" menu --> LDAP tab and configure all 
+After openDCIM is working with admin permissions (i.e. dcim user) go to "Edit Configuration" menu --> LDAP tab and configure all
 the parameters according to your LDAP configuration.
 
 Then, disable basic auth and enable LDAP auth:
-	
+
 	docker exec -it dcim mv /var/www/dcim/.htaccess /var/www/dcim/.htaccess.no
 	docker exec -it dcim sed -i "s/Apache/LDAP/" /var/www/dcim/db.inc.php
-	
+
 Now you should be able to login with LDAP users credentials.
-	
+
 ## Updating container
 
 First keep updated this repository:
 
 	docker pull lucamaro/docker-opendcim
-	
+
 Execute update in temporary container dcim_next:
 
 	docker stop dcim
@@ -108,11 +104,11 @@ Execute update in temporary container dcim_next:
 		--volumes-from=dcim \
 		--name dcim_next lucamaro/docker-opendcim
 
-Access the new webapp via browser or http client to launch the install.php script, 
+Access the new webapp via browser or http client to launch the install.php script,
 then perform the after-install operation on new container:
 
 	docker exec -it dcim rm /var/www/dcim/install.php
-	
+
 If everything is ok, delete old container:
 
 	docker rm dcim
@@ -133,9 +129,9 @@ Launch a new container with ``--volumes-from`` directive, then use tar utility t
 					/db_backup
 
 Backup archive is in your current dierectory.
-					
+
 If you are using db on docker image as described before:
-					
+
 	docker exec -it dcimdb sh -c "mysqldump -uroot -p$(ROOT_DB_PASSWD) --all-databases | gzip -9 > /db_backup/dump.sql.gz"
 	docker run --rm --volumes-from=dcim --volumes-from=dcimdb \
 			-v $PWD:/dcim_backup alpine \
