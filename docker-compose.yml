@@ -2,25 +2,6 @@ version: '3.1'
 
 services:
 
-  db:
-    image: mariadb
-    command: --sql-mode=NO_ENGINE_SUBSTITUTION
-    restart: always
-    env_file: .env
-    volumes:
-      - dcim_db:/var/lib/mysql
-    networks:
-      - database_net
-    restart: always
-
-  adminer:
-    image: adminer
-    restart: always
-    networks:
-      - database_net
-    ports:
-      - ${ADMINER_PORT}:8080
-
   webapp:
     image: lucamaro/docker-opendcim:4.5
     env_file: .env
@@ -46,7 +27,5 @@ networks:
 
 volumes:
   dcim_data:
-    driver: local
-  dcim_db:
     driver: local
 

@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: mariadb
+    command: --sql-mode=NO_ENGINE_SUBSTITUTION
+    restart: always
+    env_file: .env
+    volumes:
+      - dcim_db:/var/lib/mysql
+    networks:
+      - database_net
+    restart: always
+
+networks:
+  database_net:
+    driver: bridge
+    internal: true
+
+volumes:
+  dcim_db:
+    driver: local
+
